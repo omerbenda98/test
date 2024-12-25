@@ -32,6 +32,15 @@ pipeline {
                 '''
             }
         }
+
+        stage('Docker Build Simulation') {
+            steps {
+                echo "Would execute these Docker commands:"
+                echo "docker login with provided credentials"
+                echo "docker build -t ${DOCKER_IMAGE}:v1.${BUILD_NUMBER}"
+                echo "docker push ${DOCKER_IMAGE}:v1.${BUILD_NUMBER}"
+            }
+        }
     }
     
     post {
