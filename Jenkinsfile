@@ -1,17 +1,6 @@
 pipeline {
     agent any
     
-    tools {
-        nodejs 'nodejs'
-    }
-    
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        GITHUB_CREDENTIALS = credentials('github-credentials')
-        DOCKER_IMAGE = 'omerbenda98/puppy-adoption-frontend'
-        BRANCH_NAME = "${params.BRANCH_NAME ?: 'staging'}"
-    }
-    
     stages {
         stage('Checkout') {
             steps {
@@ -20,23 +9,26 @@ pipeline {
             }
         }
         
-        // Let's add just one of your stages first to test
-        stage('Install Dependencies') {
+        stage('Git Info') {
             steps {
-                sh 'npm ci'
+                sh '''
+                    echo "Git Status:"
+                    git status
+                    echo "\nCurrent Branch:"
+                    git branch
+                    echo "\nRemote Info:"
+                    git remote -v
+                '''
             }
         }
     }
     
     post {
-        always {
-            echo 'Pipeline finished'
-        }
         success {
-            echo 'Pipeline succeeded'
+            echo 'Git checkout successful!'
         }
         failure {
-            echo 'Pipeline failed'
+            echo 'Git checkout failed!'
         }
     }
 }
