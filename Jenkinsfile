@@ -1,6 +1,17 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'nodejs'
+    }
+    
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        GITHUB_CREDENTIALS = credentials('github-credentials')
+        DOCKER_IMAGE = 'omerbenda98/puppy-adoption-frontend'
+        BRANCH_NAME = "${params.BRANCH_NAME ?: 'staging'}"
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -25,10 +36,10 @@ pipeline {
     
     post {
         success {
-            echo 'Git checkout successful!'
+            echo 'Pipeline successful!'
         }
         failure {
-            echo 'Git checkout failed!'
+            echo 'Pipeline failed!'
         }
     }
 }
