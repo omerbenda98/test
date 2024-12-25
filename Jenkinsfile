@@ -1,8 +1,15 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'nodejs'
+    }
+    
     environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         GITHUB_CREDENTIALS = credentials('github-credentials')
+        DOCKER_IMAGE = 'omerbenda98/puppy-adoption-frontend'
+        BRANCH_NAME = "${params.BRANCH_NAME ?: 'staging'}"
     }
     
     stages {
@@ -13,16 +20,10 @@ pipeline {
             }
         }
         
-        stage('Print Info') {
+        // Let's add just one of your stages first to test
+        stage('Install Dependencies') {
             steps {
-                sh '''
-                    echo "Current directory:"
-                    pwd
-                    echo "\nRepository contents:"
-                    ls -la
-                    echo "\nGit status:"
-                    git status
-                '''
+                sh 'npm ci'
             }
         }
     }
