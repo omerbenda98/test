@@ -41,6 +41,24 @@ pipeline {
                 echo "docker push ${DOCKER_IMAGE}:v1.${BUILD_NUMBER}"
             }
         }
+
+        stage('Update K8s Manifests Simulation') {
+            steps {
+                script {
+                    def targetPath = BRANCH_NAME == 'main' ? 'main' : 'staging'
+                    def targetNamespace = BRANCH_NAME == 'main' ? 'production' : 'staging'
+                    
+                    echo """
+                        Would execute these K8s update commands:
+                        1. Remove k8s-repo if exists
+                        2. Configure git user
+                        3. Clone k8s repo
+                        4. Update deployment.yaml with new image: ${DOCKER_IMAGE}:v1.${BUILD_NUMBER}
+                        5. Commit and push changes to ${targetPath}/frontend/deployment.yaml
+                    """
+                }
+            }
+        }
     }
     
     post {
